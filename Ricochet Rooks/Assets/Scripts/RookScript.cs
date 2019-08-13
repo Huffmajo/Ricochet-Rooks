@@ -7,57 +7,73 @@ public class RookScript : MonoBehaviour
 
 	public float hori;
 	public float vert;
-	public PlayerState playerState;
+	public float speed = 2f;
 
-	enum Direction {UP, DOWN, LEFT, RIGHT};
+	private PlayerState playerState;
+	private Direction inputDir;
+
+	enum Direction {UP, DOWN, LEFT, RIGHT, NONE};
 	enum PlayerState {IDLE, MOVING};
 
     // Start is called before the first frame update
     void Start()
     {
         playerState = PlayerState.IDLE;
+        inputDir = Direction.NONE;
     }
 
     // Update is called once per frame
     void Update()
     {
-    	Direction inputDir;
+    	// debug info
+    	print("PlayerState: " + playerState);
 
     	// get inputs
         hori = Input.GetAxis("Horizontal");
         vert = Input.GetAxis("Vertical");
 
-        // only get input when player isn't moving
-        if (playerState == PlayerState.IDLE)
+        // only act if input is entered
+        if (hori >= -0.5 && hori <= 0.5 && vert >= 0.5 && vert <= 0.5)
         {
-        	if (vert > 0.5)
-        	{
-        		inputDir = Direction.UP;
-        	}
-        	else if (vert < -0.5)
-        	{
-        		inputDir = Direction.DOWN;
-        	}
-        	else if (hori > 0.5)
-        	{
-        		inputDir = Direction.RIGHT;
-        	}
-        	else if (hori < -0.5)
-        	{
-        		inputDir = Direction.LEFT;
-        	}
-        }
 
-        // check if input direction is clear
-        if (checkDirClear(inputDir))
-        {
-        	// move until colliding with wall
-        	move(inputDir);
-        }
-        else
-        {
-        	print("Cannot move that direction");
-        }
+	        // only get input when player isn't moving
+	        if (playerState == PlayerState.IDLE)
+	        {
+	        	if (vert > 0.5)
+	        	{
+	        		inputDir = Direction.UP;
+	        	}
+	        	else if (vert < -0.5)
+	        	{
+	        		inputDir = Direction.DOWN;
+	        	}
+	        	else if (hori > 0.5)
+	        	{
+	        		inputDir = Direction.RIGHT;
+	        	}
+	        	else if (hori < -0.5)
+	        	{
+	        		inputDir = Direction.LEFT;
+	        	}
+	        }
+
+	        // check if input direction is clear
+	        if (checkDirClear(inputDir))
+	        {
+	        	// player is now moving
+	        	playerState = PlayerState.MOVING;
+
+	        	// move until colliding with wall
+	        	move(inputDir);
+
+	        	// player has stopped again
+		    	playerState = PlayerState.IDLE;
+	        }
+	        else
+	        {
+	        	print("Cannot move that direction");
+	        }
+	    }
     }
 
     // Check if the space immediately in provided direction is clear
@@ -122,25 +138,25 @@ public class RookScript : MonoBehaviour
     			break;
 
     		case Direction.DOWN:
-    			dirToCheck = Vector3.back;
+    			dirToMove = Vector3.back;
     			break;
 
     		case Direction.LEFT:
-    			dirToCheck = Vector3.left;
+    			dirToMove = Vector3.left;
     			break;
 
     		case Direction.RIGHT:
-    			dirToCheck = Vector3.right;
+    			dirToMove = Vector3.right;
     			break;
 
     		default:
-    			dirToCheck = Vector3.up;
+    			dirToMove = Vector3.up;
     			break;
     	}
 
     	while (checkDirClear(dir))
     	{
-
+    		transform.position += dirToMove * speed;
     	}	
     }
 }
