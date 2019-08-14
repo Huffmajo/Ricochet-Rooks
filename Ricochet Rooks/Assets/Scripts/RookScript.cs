@@ -67,9 +67,15 @@ public class RookScript : MonoBehaviour
 	        	// player is now moving
 	        	//playerState = PlayerState.MOVING;
 
-	        	// move until colliding with wall
-	        	move(inputDir);
-	       
+	        	while (checkDirClear(inputDir))
+	        	{
+	        		// paint current tile
+	        		paintFloor();
+
+	        		// move until colliding with wall
+	        		move(inputDir);
+	        	}
+	        	
 		    	// player has stopped again
 		    	playerState = PlayerState.IDLE;
 
@@ -114,7 +120,7 @@ public class RookScript : MonoBehaviour
     	RaycastHit hit;
     	if (Physics.Raycast(transform.position, dirToCheck, out hit, 100f))
     	{
-    		print("Object at distance: " + hit.distance);
+    		//print("Object at distance: " + hit.distance);
     		if (hit.distance <= stopDistance)
     		{
     			return false;
@@ -128,7 +134,7 @@ public class RookScript : MonoBehaviour
     	// ray doesn't collide
     	else
     	{
-    		print("No collision detected");
+    		//print("No collision detected");
     		return true;
     	}
     }
@@ -160,10 +166,25 @@ public class RookScript : MonoBehaviour
     			dirToMove = Vector3.up;
     			break;
     	}
-    	
-    	while (checkDirClear(dir))
+
+    	// actually move
+    	transform.position += dirToMove * Time.deltaTime * speed;
+    }
+
+    void paintFloor()
+    {
+    	Vector3 towardsFloor = Vector3.down;
+    	GameObject tileToPaint;
+
+    	RaycastHit hit;
+    	if (Physics.Raycast(transform.position, towardsFloor, out hit, 5f))
     	{
-    		transform.position += dirToMove * Time.deltaTime * speed;
-    	}	
+    		tileToPaint = hit.transform.gameObject;
+
+    		Renderer rend = tileToPaint.GetComponent<Renderer>();
+
+    		rend.material.SetColor("_Color", Color.red);
+    	}
+
     }
 }
