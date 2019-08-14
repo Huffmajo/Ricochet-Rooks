@@ -8,6 +8,8 @@ public class RookScript : MonoBehaviour
 	public float hori;
 	public float vert;
 	public float speed = 2f;
+	public float inputThreshold = 0.2f;
+	public float stopDistance = 0.5f;
 
 	private PlayerState playerState;
 	private Direction inputDir;
@@ -25,33 +27,35 @@ public class RookScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-    	// debug info
-    	print("PlayerState: " + playerState);
-
+    	
     	// get inputs
         hori = Input.GetAxis("Horizontal");
         vert = Input.GetAxis("Vertical");
 
+
         // only act if input is entered
-        if (hori >= -0.5 && hori <= 0.5 && vert >= 0.5 && vert <= 0.5)
+        if (hori < inputThreshold * -1 || 
+        	hori > inputThreshold || 
+        	vert < inputThreshold * -1 || 
+        	vert > inputThreshold)
         {
 
 	        // only get input when player isn't moving
 	        if (playerState == PlayerState.IDLE)
 	        {
-	        	if (vert > 0.5)
+	        	if (vert > inputThreshold)
 	        	{
 	        		inputDir = Direction.UP;
 	        	}
-	        	else if (vert < -0.5)
+	        	else if (vert < inputThreshold * -1)
 	        	{
 	        		inputDir = Direction.DOWN;
 	        	}
-	        	else if (hori > 0.5)
+	        	else if (hori > inputThreshold)
 	        	{
 	        		inputDir = Direction.RIGHT;
 	        	}
-	        	else if (hori < -0.5)
+	        	else if (hori < inputThreshold * -1)
 	        	{
 	        		inputDir = Direction.LEFT;
 	        	}
@@ -61,13 +65,16 @@ public class RookScript : MonoBehaviour
 	        if (checkDirClear(inputDir))
 	        {
 	        	// player is now moving
-	        	playerState = PlayerState.MOVING;
+	        	//playerState = PlayerState.MOVING;
 
 	        	// move until colliding with wall
 	        	move(inputDir);
-
-	        	// player has stopped again
+	       
+		    	// player has stopped again
 		    	playerState = PlayerState.IDLE;
+
+		    	// debug info
+		    	//print("PlayerState: " + playerState);
 	        }
 	        else
 	        {
@@ -108,7 +115,7 @@ public class RookScript : MonoBehaviour
     	if (Physics.Raycast(transform.position, dirToCheck, out hit, 100f))
     	{
     		print("Object at distance: " + hit.distance);
-    		if (hit.distance < 0.1)
+    		if (hit.distance <= stopDistance)
     		{
     			return false;
     		}
@@ -153,10 +160,10 @@ public class RookScript : MonoBehaviour
     			dirToMove = Vector3.up;
     			break;
     	}
-
+    	
     	while (checkDirClear(dir))
     	{
-    		transform.position += dirToMove * speed;
+    		transform.position += dirToMove * Time.deltaTime * speed;
     	}	
     }
 }
