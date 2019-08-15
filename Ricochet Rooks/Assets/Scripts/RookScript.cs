@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RookScript : MonoBehaviour
 {
 
 	public float hori;
 	public float vert;
+	public float restart;
 	public float speed = 2f;
 	public float inputThreshold = 0.2f;
 	public float stopDistance = 0.5f;
+	public int numMoves; 
 
 	private PlayerState playerState;
 	private Direction inputDir;
@@ -22,6 +25,7 @@ public class RookScript : MonoBehaviour
     {
         playerState = PlayerState.IDLE;
         inputDir = Direction.NONE;
+        numMoves = 0;
     }
 
     // Update is called once per frame
@@ -31,7 +35,13 @@ public class RookScript : MonoBehaviour
     	// get inputs
         hori = Input.GetAxis("Horizontal");
         vert = Input.GetAxis("Vertical");
+        restart = Input.GetAxis("Jump");
 
+        // restart scene on spacebar
+        if (restart > inputThreshold)
+        {
+        	SceneManager.LoadScene("Test");
+        }
 
         // only act if input is entered
         if (hori < inputThreshold * -1 || 
@@ -65,7 +75,7 @@ public class RookScript : MonoBehaviour
 	        if (checkDirClear(inputDir))
 	        {
 	        	// player is now moving
-	        	//playerState = PlayerState.MOVING;
+	        	playerState = PlayerState.MOVING;
 
 	        	while (checkDirClear(inputDir))
 	        	{
@@ -75,12 +85,12 @@ public class RookScript : MonoBehaviour
 	        		// move until colliding with wall
 	        		move(inputDir);
 	        	}
-	        	
+
+	        	// update that player has moved
+	        	numMoves += 1;
+
 		    	// player has stopped again
 		    	playerState = PlayerState.IDLE;
-
-		    	// debug info
-		    	//print("PlayerState: " + playerState);
 	        }
 	        else
 	        {
@@ -185,6 +195,5 @@ public class RookScript : MonoBehaviour
 
     		rend.material.SetColor("_Color", Color.red);
     	}
-
     }
 }
