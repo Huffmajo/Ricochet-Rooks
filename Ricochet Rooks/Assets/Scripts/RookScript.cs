@@ -9,10 +9,12 @@ public class RookScript : MonoBehaviour
 	public float hori;
 	public float vert;
 	public float restart;
+	public float undo;
 	public float speed = 2f;
 	public float inputThreshold = 0.2f;
 	public float stopDistance = 0.5f;
-	public int numMoves; 
+	public int numMoves;
+	public static Stack<Vector3> prevPos = new Stack<Vector3>();
 
 	private PlayerState playerState;
 	private Direction inputDir;
@@ -36,11 +38,26 @@ public class RookScript : MonoBehaviour
         hori = Input.GetAxis("Horizontal");
         vert = Input.GetAxis("Vertical");
         restart = Input.GetAxis("Jump");
+        undo = Input.GetAxis("Undo");
 
         // restart scene on spacebar
         if (restart > inputThreshold)
         {
         	SceneManager.LoadScene("Test");
+        }
+
+        // enable undo button presses
+        if (undo > inputThreshold)
+        {
+        	if (numMoves > 0)
+        	{
+        		transform.position = prevPos.Pop();
+        		numMoves -= 1;
+        	}
+        	else
+        	{
+        		print("Can't undo");
+        	}
         }
 
         // only act if input is entered
@@ -74,6 +91,9 @@ public class RookScript : MonoBehaviour
 	        // check if input direction is clear
 	        if (checkDirClear(inputDir))
 	        {
+	        	// save current position into prevPos stack
+	        	prevPos.Push(transform.position);
+
 	        	// player is now moving
 	        	playerState = PlayerState.MOVING;
 
