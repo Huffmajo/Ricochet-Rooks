@@ -18,6 +18,7 @@ public class RookScript : MonoBehaviour
 
 	private PlayerState playerState;
 	private Direction inputDir;
+	private Scene currentScene;
 
 	enum Direction {UP, DOWN, LEFT, RIGHT, NONE};
 	enum PlayerState {IDLE, MOVING};
@@ -25,6 +26,7 @@ public class RookScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+    	currentScene = SceneManager.GetActiveScene();
         playerState = PlayerState.IDLE;
         inputDir = Direction.NONE;
         numMoves = 0;
@@ -44,7 +46,7 @@ public class RookScript : MonoBehaviour
         // restart scene on spacebar
         if (restart > inputThreshold)
         {
-        	SceneManager.LoadScene("Test");
+        	SceneManager.LoadScene(currentScene.name);
         }
 
         // enable undo button presses
@@ -58,9 +60,6 @@ public class RookScript : MonoBehaviour
         		{
 					// move towards last position	
         			transform.position = Vector3.MoveTowards(transform.position, lastPos, speed * Time.deltaTime);
-
-	        		// unpaint tiles underneath us
-	        		paintFloor(Color.white);
         		}
 
         		// decrement numMoves
@@ -225,7 +224,11 @@ public class RookScript : MonoBehaviour
 
     		Renderer rend = tileToPaint.GetComponent<Renderer>();
 
-    		rend.material.SetColor("_Color", paintColor);
+    		// only paint floor if it isn't painted yet
+    		if (rend.material.color != paintColor)
+    		{
+    			rend.material.color = paintColor;
+    		}
     	}
     }
 }
