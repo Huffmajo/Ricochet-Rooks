@@ -14,7 +14,9 @@ public class RookScript : MonoBehaviour
 	public float inputThreshold = 0.2f;
 	public float stopDistance = 0.5f;
 	public int numMoves;
+	public Color paintColor;
 	public static Stack<Vector3> prevPos = new Stack<Vector3>();
+
 
 	private PlayerState playerState;
 	private Direction inputDir;
@@ -29,6 +31,7 @@ public class RookScript : MonoBehaviour
     	currentScene = SceneManager.GetActiveScene();
         playerState = PlayerState.IDLE;
         inputDir = Direction.NONE;
+        paintColor = Color.red;
         numMoves = 0;
         undo = false;
     }
@@ -111,8 +114,11 @@ public class RookScript : MonoBehaviour
 	        	while (checkDirClear(inputDir))
 	        	{
 	        		// paint current tile
-	        		paintFloor(Color.red);
-
+	        		if (checkFloorColor(paintColor))
+	        		{
+	        			paintFloor(paintColor);
+	        		}
+	        		
 	        		// move until colliding with wall
 	        		move(inputDir);
 	        	}
@@ -212,7 +218,8 @@ public class RookScript : MonoBehaviour
     	transform.position += dirToMove * Time.deltaTime * speed;
     }
 
-    void paintFloor(Color paintColor)
+    // returns true if floor is of a paintColor
+    bool checkFloorColor(Color paintColor)
     {
     	Vector3 towardsFloor = Vector3.down;
     	GameObject tileToPaint;
@@ -224,11 +231,34 @@ public class RookScript : MonoBehaviour
 
     		Renderer rend = tileToPaint.GetComponent<Renderer>();
 
-    		// only paint floor if it isn't painted yet
+    		// check if tile is of color paintColor
     		if (rend.material.color != paintColor)
     		{
-    			rend.material.color = paintColor;
+    			return true;
     		}
+    		else
+    		{
+    			return false;
+    		}
+    	}
+    	else
+    	{
+    		return false;
+    	}
+    }
+
+    void paintFloor(Color paintColor)
+    {
+    	Vector3 towardsFloor = Vector3.down;
+    	GameObject tileToPaint;
+
+    	RaycastHit hit;
+    	if (Physics.Raycast(transform.position, towardsFloor, out hit, 5f))
+    	{
+    		tileToPaint = hit.transform.gameObject;
+
+    		Renderer rend = tileToPaint.GetComponent<Renderer>();
+    		rend.material.color = paintColor;
     	}
     }
 }
