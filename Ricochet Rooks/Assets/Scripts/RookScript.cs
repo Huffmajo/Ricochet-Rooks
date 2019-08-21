@@ -9,7 +9,7 @@ public class RookScript : MonoBehaviour
 	public float hori;
 	public float vert;
 	public float restart;
-	public float undo;
+	public bool undo;
 	public float speed = 2f;
 	public float inputThreshold = 0.2f;
 	public float stopDistance = 0.5f;
@@ -28,6 +28,7 @@ public class RookScript : MonoBehaviour
         playerState = PlayerState.IDLE;
         inputDir = Direction.NONE;
         numMoves = 0;
+        undo = false;
     }
 
     // Update is called once per frame
@@ -38,7 +39,7 @@ public class RookScript : MonoBehaviour
         hori = Input.GetAxis("Horizontal");
         vert = Input.GetAxis("Vertical");
         restart = Input.GetAxis("Jump");
-        undo = Input.GetAxis("Undo");
+        undo = Input.GetKeyDown(KeyCode.Q);
 
         // restart scene on spacebar
         if (restart > inputThreshold)
@@ -47,11 +48,22 @@ public class RookScript : MonoBehaviour
         }
 
         // enable undo button presses
-        if (undo > inputThreshold)
+        if (undo)
         {
         	if (numMoves > 0)
         	{
-        		transform.position = prevPos.Pop();
+        		Vector3 lastPos = prevPos.Pop();
+
+        		while(Vector3.Distance(transform.position, lastPos) > 0.001f)
+        		{
+					// move towards last position	
+        			transform.position = Vector3.MoveTowards(transform.position, lastPos, speed * Time.deltaTime);
+
+	        		// unpaint tiles underneath us
+	        		paintFloor(Color.white);
+        		}
+
+        		// decrement numMoves
         		numMoves -= 1;
         	}
         	else
@@ -100,7 +112,7 @@ public class RookScript : MonoBehaviour
 	        	while (checkDirClear(inputDir))
 	        	{
 	        		// paint current tile
-	        		paintFloor();
+	        		paintFloor(Color.red);
 
 	        		// move until colliding with wall
 	        		move(inputDir);
@@ -201,7 +213,7 @@ public class RookScript : MonoBehaviour
     	transform.position += dirToMove * Time.deltaTime * speed;
     }
 
-    void paintFloor()
+    void paintFloor(Color paintColor)
     {
     	Vector3 towardsFloor = Vector3.down;
     	GameObject tileToPaint;
@@ -213,7 +225,7 @@ public class RookScript : MonoBehaviour
 
     		Renderer rend = tileToPaint.GetComponent<Renderer>();
 
-    		rend.material.SetColor("_Color", Color.red);
+    		rend.material.SetColor("_Color", paintColor);
     	}
     }
 }
