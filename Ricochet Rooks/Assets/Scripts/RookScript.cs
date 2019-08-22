@@ -63,6 +63,9 @@ public class RookScript : MonoBehaviour
         		{
 					// move towards last position	
         			transform.position = Vector3.MoveTowards(transform.position, lastPos, speed * Time.deltaTime);
+        		
+        			// decrement paintLevel
+        			decrementPaintLevel();
         		}
 
         		// decrement numMoves
@@ -114,10 +117,7 @@ public class RookScript : MonoBehaviour
 	        	while (checkDirClear(inputDir))
 	        	{
 	        		// paint current tile
-	        		if (checkFloorColor(paintColor))
-	        		{
-	        			paintFloor(paintColor);
-	        		}
+	        		incrementPaintLevel();
 	        		
 	        		// move until colliding with wall
 	        		move(inputDir);
@@ -232,7 +232,7 @@ public class RookScript : MonoBehaviour
     		Renderer rend = tileToPaint.GetComponent<Renderer>();
 
     		// check if tile is of color paintColor
-    		if (rend.material.color != paintColor)
+    		if (rend.material.color == paintColor)
     		{
     			return true;
     		}
@@ -247,7 +247,7 @@ public class RookScript : MonoBehaviour
     	}
     }
 
-    void paintFloor(Color paintColor)
+    void incrementPaintLevel()
     {
     	Vector3 towardsFloor = Vector3.down;
     	GameObject tileToPaint;
@@ -257,8 +257,21 @@ public class RookScript : MonoBehaviour
     	{
     		tileToPaint = hit.transform.gameObject;
 
-    		Renderer rend = tileToPaint.GetComponent<Renderer>();
-    		rend.material.color = paintColor;
+    		tileToPaint.GetComponent<TileScript>().paintLevel += 1;
+    	}
+    }
+
+    void decrementPaintLevel()
+    {
+    	Vector3 towardsFloor = Vector3.down;
+    	GameObject tileToPaint;
+
+    	RaycastHit hit;
+    	if (Physics.Raycast(transform.position, towardsFloor, out hit, 5f))
+    	{
+    		tileToPaint = hit.transform.gameObject;
+
+    		tileToPaint.GetComponent<TileScript>().paintLevel -= 1;
     	}
     }
 }
