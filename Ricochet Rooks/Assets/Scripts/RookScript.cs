@@ -15,8 +15,8 @@ public class RookScript : MonoBehaviour
 	public float stopDistance = 0.5f;
 	public int numMoves;
 	public Color paintColor;
+	public Color playerColor;
 	public static Stack<Vector3> prevPos = new Stack<Vector3>();
-
 
 	private PlayerState playerState;
 	private Direction inputDir;
@@ -32,6 +32,8 @@ public class RookScript : MonoBehaviour
         playerState = PlayerState.IDLE;
         inputDir = Direction.NONE;
         paintColor = Color.red;
+        playerColor = Color.magenta;
+        GetComponent<Renderer>().material.color = playerColor;
         numMoves = 0;
         undo = false;
     }

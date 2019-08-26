@@ -86,7 +86,7 @@ public class TitleScreenCube : MonoBehaviour
     			break;
     	}
 
-   		transform.Rotate(rotateX, rotateY, rotateZ, Space.Self);	
+   		transform.Rotate(rotateX, rotateY, rotateZ, Space.World);	
     }
 
     void randomizeSpeeds()
