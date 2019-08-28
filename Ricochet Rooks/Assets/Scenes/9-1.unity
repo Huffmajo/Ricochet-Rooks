@@ -552,10 +552,13 @@ MonoBehaviour:
   hori: 0
   vert: 0
   restart: 0
+  undo: 0
   speed: 2
   inputThreshold: 0.2
   stopDistance: 0.5
   numMoves: 0
+  paintColor: {r: 0, g: 0, b: 0, a: 0}
+  playerColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!54 &92344533
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2192,7 +2195,6 @@ GameObject:
   - component: {fileID: 531336672}
   - component: {fileID: 531336674}
   - component: {fileID: 531336673}
-  - component: {fileID: 531336675}
   m_Layer: 5
   m_Name: Text Moves
   m_TagString: Untagged
@@ -2261,20 +2263,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 531336671}
   m_CullTransparentMesh: 0
---- !u!114 &531336675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 531336671}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eebec761489a2cf44b5688947ec8dddc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numMoves: 0
-  player: {fileID: 92344527}
 --- !u!4 &544287362 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7873441268806129985, guid: 5a6d749a32e88ad4e90846b8ce38e91e,
@@ -3207,6 +3195,7 @@ GameObject:
   - component: {fileID: 916884853}
   - component: {fileID: 916884852}
   - component: {fileID: 916884851}
+  - component: {fileID: 916884855}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -3295,6 +3284,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &916884855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916884850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29c2f4dd67b4e074caa0076d7bce373a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movesText: {fileID: 531336673}
+  tilesLeft: {fileID: 1022685933}
+  player: {fileID: 92344527}
+  tiles: []
+  percentage: 0
 --- !u!4 &917824748 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7873441268806129985, guid: 5a6d749a32e88ad4e90846b8ce38e91e,
@@ -3617,8 +3623,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 392, y: 232}
-  m_SizeDelta: {x: 137.2, y: 37.7}
+  m_AnchoredPosition: {x: 442.51, y: 205.98}
+  m_SizeDelta: {x: 238.25, y: 89.74}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1022685933
 MonoBehaviour:
