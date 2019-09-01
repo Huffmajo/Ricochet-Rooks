@@ -9,11 +9,15 @@ public class UIScript : MonoBehaviour
 	public Text tilesLeft;
 	public GameObject player;
 	public GameObject[] tiles;
+    public int roundedPercentage;
+    public int goldPar = 29;
+    public int silverPar = 35;
+    public int bronzePar = 40;
 
 	private int numMoves;
 	private int totalTiles;
 	private int paintedTiles;
-	public float percentage;
+	private float percentage;
 	
 
     // Start is called before the first frame update
@@ -63,9 +67,9 @@ public class UIScript : MonoBehaviour
 
     	percentage = ((paintedTiles * 1.0f) / (totalTiles * 1.0f)) * 100f;
 
-
+        roundedPercentage = Mathf.RoundToInt(percentage);
 
     	// print results to UI
-    	tilesLeft.text = "Tiles Left: " + paintedTiles + "/" + totalTiles + "\n" + Mathf.RoundToInt(percentage) + "%";
+    	tilesLeft.text = "Tiles Left: " + paintedTiles + "/" + totalTiles + "\n" + roundedPercentage + "%";
     }
 }

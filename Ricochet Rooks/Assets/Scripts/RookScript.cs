@@ -17,6 +17,10 @@ public class RookScript : MonoBehaviour
 	public Color paintColor;
 	public Color playerColor;
 	public static Stack<Vector3> prevPos = new Stack<Vector3>();
+	public GameObject canvasUI;
+	public bool inControl;
+	public int numMovesBest;
+	public int numMovesFinal;
 
 	private PlayerState playerState;
 	private Direction inputDir;
@@ -25,28 +29,38 @@ public class RookScript : MonoBehaviour
 	enum Direction {UP, DOWN, LEFT, RIGHT, NONE};
 	enum PlayerState {IDLE, MOVING};
 
-    // Start is called before the first frame update
     void Start()
     {
+    	// initialize variables on start
     	currentScene = SceneManager.GetActiveScene();
         playerState = PlayerState.IDLE;
         inputDir = Direction.NONE;
         paintColor = Color.red;
         playerColor = Color.magenta;
         GetComponent<Renderer>().material.color = playerColor;
+        inControl = true;
         numMoves = 0;
+        numMovesBest = 999;
         undo = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
+    	// limit player input if we need to
+    	if (inControl)
+    	{
+    		// get inputs
+	        hori = Input.GetAxis("Horizontal");
+    	    vert = Input.GetAxis("Vertical");
+        	restart = Input.GetAxis("Jump");
+    	    undo = Input.GetKeyDown(KeyCode.Q);
+    	}
     	
-    	// get inputs
-        hori = Input.GetAxis("Horizontal");
-        vert = Input.GetAxis("Vertical");
-        restart = Input.GetAxis("Jump");
-        undo = Input.GetKeyDown(KeyCode.Q);
+    	// check if level is completed
+    	if (canvasUI.GetComponent<UIScript>().roundedPercentage == 100)
+    	{
+    		levelBeat();
+    	}
 
         // restart scene on spacebar
         if (restart > inputThreshold)
@@ -133,7 +147,7 @@ public class RookScript : MonoBehaviour
 	        }
 	        else
 	        {
-	        	print("Cannot move that direction");
+	        	//print("Cannot move that direction");
 	        }
 	    }
     }
@@ -275,5 +289,38 @@ public class RookScript : MonoBehaviour
 
     		tileToPaint.GetComponent<TileScript>().paintLevel -= 1;
     	}
+    }
+
+    void levelBeat()
+    {
+    	// set current number of moves 
+    	numMovesFinal = numMoves;
+
+    	string medalReceived;
+
+    	if (numMovesFinal > canvasUI.GetComponent<UIScript>().silverPar)
+    	{
+    		medalReceived = "bronze";
+    	}
+    	else if(numMovesFinal > canvasUI.GetComponent<UIScript>().goldPar)
+    	{
+    		medalReceived = "silver";
+    	}
+    	else
+    	{
+    		medalReceived = "gold";
+    	}
+
+    	
+
+    	// overwrite best moves if current is better
+    	if (numMovesFinal < numMovesBest)
+    	{
+    		numMovesBest = numMovesFinal;
+
+    		// save best number of moves if it's changed
+    	}
+
+    	print("level Completed. " + medalReceived + "medal recevied!");
     }
 }

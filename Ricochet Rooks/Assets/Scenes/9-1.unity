@@ -559,6 +559,10 @@ MonoBehaviour:
   numMoves: 0
   paintColor: {r: 0, g: 0, b: 0, a: 0}
   playerColor: {r: 0, g: 0, b: 0, a: 0}
+  canvasUI: {fileID: 916884850}
+  inControl: 0
+  numMovesBest: 0
+  numMovesFinal: 0
 --- !u!54 &92344533
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -593,7 +597,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3300,7 +3304,10 @@ MonoBehaviour:
   tilesLeft: {fileID: 1022685933}
   player: {fileID: 92344527}
   tiles: []
-  percentage: 0
+  roundedPercentage: 0
+  goldPar: 29
+  silverPar: 35
+  bronzePar: 40
 --- !u!4 &917824748 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7873441268806129985, guid: 5a6d749a32e88ad4e90846b8ce38e91e,
