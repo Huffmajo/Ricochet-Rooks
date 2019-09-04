@@ -6,23 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class LevelCompleteUI : MonoBehaviour
 {
-
 	public GameObject player;
-	public Text resultsText;
-
-
-	private int bestMoves;
-	private int currentMoves;
-
-    void Start()
-    {
-    	
-    }
-
-    void Update()
-    {
-        
-    }
 
     string getMedal()
     {
