@@ -8,24 +8,13 @@ public class TitleScreen : MonoBehaviour
 	public string levelsSceneName;
 	public string settingsSceneName;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     // 
     public void levels()
     {
     	SceneManager.LoadScene(levelsSceneName);
     }
 
+    // change to settings menu
 	public void settings()
     {
     	SceneManager.LoadScene(settingsSceneName);

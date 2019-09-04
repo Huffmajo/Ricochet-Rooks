@@ -21,6 +21,9 @@ public class RookScript : MonoBehaviour
 	public bool inControl;
 	public int numMovesBest;
 	public int numMovesFinal;
+	public string medalReceived;
+	public GameObject completeLevelUI;
+	public GameObject alwaysUI;
 
 	private PlayerState playerState;
 	private Direction inputDir;
@@ -42,6 +45,7 @@ public class RookScript : MonoBehaviour
         numMoves = 0;
         numMovesBest = 999;
         undo = false;
+        completeLevelUI.SetActive(false);
     }
 
     void Update()
@@ -293,34 +297,40 @@ public class RookScript : MonoBehaviour
 
     void levelBeat()
     {
-    	// set current number of moves 
-    	numMovesFinal = numMoves;
-
-    	string medalReceived;
-
-    	if (numMovesFinal > canvasUI.GetComponent<UIScript>().silverPar)
+    	if (!completeLevelUI.activeSelf)
     	{
-    		medalReceived = "bronze";
-    	}
-    	else if(numMovesFinal > canvasUI.GetComponent<UIScript>().goldPar)
-    	{
-    		medalReceived = "silver";
-    	}
-    	else
-    	{
-    		medalReceived = "gold";
-    	}
+    		// set current number of moves 
+	    	numMovesFinal = numMoves;
 
+	    	if (numMovesFinal > canvasUI.GetComponent<UIScript>().silverPar)
+	    	{
+	    		medalReceived = "bronze";
+	    	}
+	    	else if(numMovesFinal > canvasUI.GetComponent<UIScript>().goldPar)
+	    	{
+	    		medalReceived = "silver";
+	    	}
+	    	else
+	    	{
+	    		medalReceived = "gold";
+	    	}
+
+	    	// overwrite best moves if current is better
+	    	if (numMovesFinal < numMovesBest)
+	    	{
+	    		numMovesBest = numMovesFinal;
+
+	    		// save best number of moves if it's changed
+	    	}
+
+	    	print("level Completed. " + medalReceived + "medal received!");
+
+	    	// bring up level complete UI
+	    	completeLevelUI.SetActive(true);
+
+	    	// deactivate player movement
+	    	inControl = false;
+    	}
     	
-
-    	// overwrite best moves if current is better
-    	if (numMovesFinal < numMovesBest)
-    	{
-    		numMovesBest = numMovesFinal;
-
-    		// save best number of moves if it's changed
-    	}
-
-    	print("level Completed. " + medalReceived + "medal recevied!");
     }
 }
