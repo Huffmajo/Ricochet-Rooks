@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,6 +24,9 @@ public class RookScript : MonoBehaviour
 	public string medalReceived;
 	public GameObject completeLevelUI;
 	public GameObject alwaysUI;
+	public GameObject shakee;
+	public float magnitude;
+	public float duration;
 
 	private PlayerState playerState;
 	private Direction inputDir;
@@ -46,6 +49,8 @@ public class RookScript : MonoBehaviour
         numMovesBest = 999;
         undo = false;
         completeLevelUI.SetActive(false);
+        magnitude = 0.1f;
+		duration = 0.2f;
     }
 
     void Update()
@@ -152,6 +157,7 @@ public class RookScript : MonoBehaviour
 	        else
 	        {
 	        	//print("Cannot move that direction");
+	        	StartCoroutine(shake(shakee, magnitude, duration));
 	        }
 	    }
     }
@@ -331,6 +337,35 @@ public class RookScript : MonoBehaviour
 	    	// deactivate player movement
 	    	inControl = false;
     	}
-    	
+    }
+
+    public IEnumerator shake(GameObject thingToShake, float magnitude, float duration)
+    {
+    	float x;
+   		float y;
+   		float z;
+
+    	// retain objects initial position to return to after shaking
+    	Vector3 originalPos = thingToShake.transform.position;
+
+    	// shake for the entire duration
+    	while (duration > 0)
+    	{
+    		print ("Duration: " + duration);
+    		// get random values based on magnitude
+    		x = Random.Range(duration * -1f, duration) + thingToShake.transform.position.x;
+    		y = Random.Range(duration * -1f, duration) + thingToShake.transform.position.y;
+    		z = Random.Range(duration * -1f, duration) + thingToShake.transform.position.z;
+    		
+    		thingToShake.transform.position = new Vector3(x, y, z);
+
+    		// countdown duration
+    		duration -= Time.deltaTime;
+
+    		yield return null;
+    	}
+
+    	// return object back to initial position
+    	thingToShake.transform.position = originalPos;
     }
 }
